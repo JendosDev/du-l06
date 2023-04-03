@@ -6,27 +6,23 @@ public class Plant {
     private String name;
     private String notes;
     private LocalDate plantedDate;
-    private LocalDate LastWateringDate;
+    private LocalDate lastWateringDate;
     private int frequencyOfWatering;
 
-    public Plant(String name, String notes, LocalDate plantedDate, LocalDate wateringDate, int frequencyOfWatering) {
+    public Plant(String name, String notes, LocalDate plantedDate, LocalDate lastWateringDate, int frequencyOfWatering) {
         this.name = name;
         this.notes = notes;
         this.plantedDate = plantedDate;
-        this.LastWateringDate = wateringDate;
+        this.lastWateringDate = lastWateringDate;
         this.frequencyOfWatering = frequencyOfWatering;
     }
 
-    public Plant(String notes, LocalDate wateringDate) {
-        this.notes = "Prázdný řetězec";
-        this.LastWateringDate = LocalDate.now();
+    public Plant(String name, LocalDate plantedDate, int frequencyOfWatering) {
+        this(name, "Prázdný řetězec", plantedDate, LocalDate.now(), frequencyOfWatering);
     }
 
-    public Plant(String notes, LocalDate wateringDate, int frequencyOfWatering) {
-        this.notes = "Prázdný řetězec";
-        this.plantedDate = LocalDate.now();
-        this.LastWateringDate = LocalDate.now();
-        this.frequencyOfWatering = 7;
+    public Plant(String name) {
+        this(name, "Prázdný řetězec", LocalDate.now(), LocalDate.now(), 7);
     }
 
     public String getName() {
@@ -54,15 +50,14 @@ public class Plant {
     }
 
     public LocalDate getLastWateringDate() {
-        return LastWateringDate;
+        return lastWateringDate;
     }
 
     public void setLastWateringDate(LocalDate lastWateringDate) throws PlantException {
-        this.LastWateringDate = lastWateringDate;
-        if (LastWateringDate == plantedDate);
-        else {
-            throw new PlantException("Chyba! datum poslední zálivky a zasazení nejsou totožné");
+        if (lastWateringDate.isBefore(plantedDate)) {
+            throw new PlantException("Chyba! datum poslední zálivky a zasazení nejsou totožné.");
         }
+        this.lastWateringDate = lastWateringDate;
     }
 
     public int getFrequencyOfWatering() {
@@ -78,5 +73,10 @@ public class Plant {
 
     public String getWateringInfo() {
         return getName()+" "+ getLastWateringDate()+" "+getFrequencyOfWatering()+" "+getNotes();
+    }
+
+    @Override
+    public String toString() {
+        return getName()+" "+getNotes()+" "+getPlantedDate()+" "+getLastWateringDate()+" "+getFrequencyOfWatering();
     }
 }
