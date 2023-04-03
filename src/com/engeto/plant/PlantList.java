@@ -11,15 +11,22 @@ import java.util.Scanner;
 public class PlantList {
     private List<Plant> dataList = new ArrayList<>();
     public void addAllFromFile(String filename) throws PlantException {
+        long lineNumber = 0;
+        String[] plants = new String[0];
+        String line = "";
         try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(filename)))) {
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] items = line.split("   ");
-                Plant plant = new Plant(items[0], items[1], LocalDate.parse(items[3]), LocalDate.parse(items[4]), items[2].indexOf(2));
+                lineNumber++;
+                line = scanner.nextLine();
+                plants = line.split("\t");
+                if (plants.length != 5) throw new PlantException("Špatný počet položek na řádku číslo "+lineNumber);
+                Plant plant = new Plant(plants[0], plants[1], LocalDate.parse(plants[3]), LocalDate.parse(plants[4]), Integer.parseInt(plants[2]));
                 dataList.add(plant);
             }
         } catch (FileNotFoundException e) {
-            throw new PlantException("Nepodačilo se nalézt soubor: " + filename + "!\n\"" + e.getLocalizedMessage()+"\"");
+            throw new PlantException("Nepodařilo se nalézt soubor: " + filename + "!\n\"" + e.getLocalizedMessage()+"\"");
+        } catch (NumberFormatException e) {
+            throw new PlantException("Špatně zadané číslo na řádku "+lineNumber+": "+plants[1]+"\nŘádek: "+line+"\n\""+e.getLocalizedMessage()+"\"");
         }
     }
 
@@ -27,11 +34,6 @@ public class PlantList {
         dataList.add(plant);
     }
 
-    public void clear() {
-        dataList.clear();
-    }
-
-    // kopije datalistu
     public List<Plant> getList() {
         return new ArrayList<>(dataList);
     }
