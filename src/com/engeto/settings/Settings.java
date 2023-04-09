@@ -1,4 +1,6 @@
-package com.engeto.plant;
+package com.engeto.settings;
+
+import java.time.LocalDate;
 
 public class Settings {
     private static final String FILENAME = "kvetiny.txt";
