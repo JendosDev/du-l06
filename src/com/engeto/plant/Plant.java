@@ -1,7 +1,6 @@
 package com.engeto.plant;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.Objects;
 
 public class Plant implements Comparable<Plant> {

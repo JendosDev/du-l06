@@ -1,15 +1,13 @@
 package com.engeto.plant;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class PlantList {
-    private List<Plant> dataList = new ArrayList<>();
+    private final List<Plant> dataList = new ArrayList<>();
     public void addAllFromFile(String filename) throws PlantException {
         long lineNumber = 0;
         String[] plants = new String[0];
@@ -27,6 +25,24 @@ public class PlantList {
             throw new PlantException("Nepodařilo se nalézt soubor: " + filename + "!\n\"" + e.getLocalizedMessage()+"\"");
         } catch (NumberFormatException e) {
             throw new PlantException("Špatně zadané číslo na řádku "+lineNumber+": "+plants[1]+"\nŘádek: "+line+"\n\""+e.getLocalizedMessage()+"\"");
+        } catch (IllegalArgumentException e) {
+            throw new PlantException("Špatně zadaná položka na řádku "+lineNumber+": "+plants[1]+"\nŘádek: "+line+"\n\""+e.getLocalizedMessage()+"\"");
+        }
+    }
+
+    public void fileWriter(String filename, String delimiter) throws PlantException {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            for (Plant plant : dataList) {
+                String rec =
+                        plant.getName()+delimiter
+                        +plant.getNotes()+delimiter
+                        +plant.getFrequencyOfWatering()+delimiter
+                        +plant.getPlantedDate()+delimiter
+                        +plant.getLastWateringDate();
+                writer.println(rec);
+            }
+        } catch (IOException e) {
+            throw new PlantException("Došlo k chybě při zápisu do souboru "+filename+": "+e.getLocalizedMessage());
         }
     }
 
